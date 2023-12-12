@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    #chat-container {
+      max-width: 600px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #chat-messages {
+      padding: 10px;
+      overflow-y: scroll;
+      max-height: 300px;
+    }
+
+    #user-input {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+    }
+
+    #username-input,
+    #message-input {
+      flex-grow: 1;
+      margin-right: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #send-button {
+      padding: 8px 12px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    var currentUser;
+
+    function setUsername() {
+      var usernameInput = document.getElementById('username-input');
+      var username = usernameInput.value.trim();
+
+      if (username === '') {
+        alert('Please enter a username.');
+        return;
+      }
+
+      currentUser = username;
+      alert('Username set to ' + currentUser);
+    }
+
+    function sendMessage() {
+      if (!currentUser) {
+        alert('Please set a username first.');
+        return;
+      }
+
+      var messageInput = document.getElementById('message-input');
+      var message = messageInput.value.trim();
+
+      if (message === '') {
+        alert('Please enter a message.');
+        return;
+      }
+
+      var chatMessages = document.getElementById('chat-messages');
+      var newMessage = document.createElement('div');
+      newMessage.className = 'message';
+      newMessage.textContent = currentUser + ': ' + message;
+      chatMessages.appendChild(newMessage);
+
+      // Store the message in local storage
+      var messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+      messages.push({ username: currentUser, message: message });
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+
+      // Clear the input field after sending a message
+      messageInput.value = '';
+
+      // Scroll to the bottom of the chat messages
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Load previous messages from local storage on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      currentUser = prompt('Enter your username:');
+
+      var messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+      var chatMessages = document.getElementById('chat-messages');
+
+      messages.forEach(function (msg) {
+        var newMessage = document.createElement('div');
+        newMessage.className = 'message';
+        newMessage.textContent = msg.username + ': ' + msg.message;
+        chatMessages.appendChild(newMessage);
+      });
+
+      // Scroll to the bottom of the chat messages
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+  </script>
+</head>
+<body>
+
+  <div id="chat-container">
+    <div id="chat-messages">
+      <!-- Previous chat messages and new messages go here -->
+    </div>
+    <div id="user-input">
+      <input type="text" id="username-input" placeholder="Your username...">
+      <button onclick="setUsername()">Set Username</button>
+      <input type="text" id="message-input" placeholder="Type your message...">
+      <button id="send-button" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+</body>
+</html>
