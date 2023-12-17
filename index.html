@@ -52,11 +52,16 @@
         <label for="numberOfHumans">Number of Humans:</label>
         <input type="number" id="numberOfHumans" placeholder="Enter number of humans">
 
+        <label for="numDigits">Number of Digits:</label>
+        <input type="number" id="numDigits" placeholder="Enter number of digits">
+
         <label for="contest">Contest:</label>
         <select id="contest">
             <option value="1">No</option>
             <option value="2">Yes</option>
         </select>
+        <br>
+        <br>
 
         <button onclick="calculateNewPoints()">Calculate New Clan Points</button>
 
@@ -68,12 +73,13 @@
             const oldPoints = parseFloat(document.getElementById('oldPoints').value);
             const numberOfHumans = parseFloat(document.getElementById('numberOfHumans').value);
             const contest = parseFloat(document.getElementById('contest').value);
+            const numDigits = parseInt(document.getElementById('numDigits').value);
 
             const newPointsOnWin = oldPoints + contest * (64 - oldPoints) * numberOfHumans / 589824;
             const newPointsOnLoss = oldPoints * (1032192 / (1032192 + numberOfHumans));
 
-            const result = `New Clan Points on Win: ${newPointsOnWin.toFixed(5)}<br>
-                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(5)}`;
+            const result = `New Clan Points on Win: ${newPointsOnWin.toFixed(numDigits)}<br>
+                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(numDigits)}`;
 
             document.getElementById('result').innerHTML = result;
         }
