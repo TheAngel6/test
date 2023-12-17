@@ -74,15 +74,21 @@
             const numberOfHumans = parseFloat(document.getElementById('numberOfHumans').value);
             const contest = parseFloat(document.getElementById('contest').value);
             const numDigits = parseInt(document.getElementById('numDigits').value);
-
+    
             const newPointsOnWin = oldPoints + contest * (64 - oldPoints) * numberOfHumans / 589824;
             const newPointsOnLoss = oldPoints * (1032192 / (1032192 + numberOfHumans));
-
+    
+            const pointsWon = newPointsOnWin - oldPoints;
+            const pointsLost = oldPoints - newPointsOnLoss;
+    
             const result = `New Clan Points on Win: ${newPointsOnWin.toFixed(numDigits)}<br>
-                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(numDigits)}`;
-
+                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(numDigits)}<br>
+                            Points Won: ${pointsWon.toFixed(numDigits)}<br>
+                            Points Lost: ${pointsLost.toFixed(numDigits)}`;
+    
             document.getElementById('result').innerHTML = result;
         }
     </script>
+    
 </body>
 </html>
