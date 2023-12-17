@@ -72,8 +72,8 @@
             const newPointsOnWin = oldPoints + contest * (64 - oldPoints) * numberOfHumans / 589824;
             const newPointsOnLoss = oldPoints * (1032192 / (1032192 + numberOfHumans));
 
-            const result = `New Clan Points on Win: ${newPointsOnWin.toFixed(2)}<br>
-                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(2)}`;
+            const result = `New Clan Points on Win: ${newPointsOnWin.toFixed(5)}<br>
+                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(5)}`;
 
             document.getElementById('result').innerHTML = result;
         }
