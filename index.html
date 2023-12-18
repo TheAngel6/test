@@ -3,49 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="csssheet.css">
     <title>Clan Points Converter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #000000;
-            color: #ffffff;
-        }
-
-        .converter {
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-
-        input {
-            padding: 5px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #ffffff;
-            color: #000000;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #ffffff;
-        }
-    </style>
 </head>
 <body>
-    <div class="converter">
+    <div class="calculator">
         <label for="oldPoints">Old Clan Points:</label>
         <input type="number" id="oldPoints" placeholder="Enter old clan points">
 
@@ -64,31 +26,97 @@
         <br>
 
         <button onclick="calculateNewPoints()">Calculate New Clan Points</button>
+        <button onclick="resetForm()">Reset Form</button>
 
         <div id="result"></div>
     </div>
 
+    <div class="history">
+        <h2>Calculation History</h2>
+        <div id="history"></div>
+    </div>
+
+    <button onclick="toggleMode()" class="toggle-button">&#9728;</button>
+
     <script>
+        const history = [];
+
         function calculateNewPoints() {
             const oldPoints = parseFloat(document.getElementById('oldPoints').value);
             const numberOfHumans = parseFloat(document.getElementById('numberOfHumans').value);
-            const contest = parseFloat(document.getElementById('contest').value);
+            const contest = parseInt(document.getElementById('contest').value);
             const numDigits = parseInt(document.getElementById('numDigits').value);
-    
+
             const newPointsOnWin = oldPoints + contest * (64 - oldPoints) * numberOfHumans / 589824;
             const newPointsOnLoss = oldPoints * (1032192 / (1032192 + numberOfHumans));
-    
+
             const pointsWon = newPointsOnWin - oldPoints;
             const pointsLost = oldPoints - newPointsOnLoss;
-    
-            const result = `New Clan Points on Win: ${newPointsOnWin.toFixed(numDigits)}<br>
-                            New Clan Points on Loss: ${newPointsOnLoss.toFixed(numDigits)}<br>
-                            Points Won: ${pointsWon.toFixed(numDigits)}<br>
-                            Points Lost: ${pointsLost.toFixed(numDigits)}`;
-    
-            document.getElementById('result').innerHTML = result;
+
+            const calculation = {
+                oldPoints,
+                numberOfHumans,
+                contest,
+                numDigits,
+                newPointsOnWin: newPointsOnWin.toFixed(numDigits),
+                newPointsOnLoss: newPointsOnLoss.toFixed(numDigits),
+                pointsWon: pointsWon.toFixed(numDigits),
+                pointsLost: pointsLost.toFixed(numDigits),
+            };
+
+            history.push(calculation);
+            updateResult(calculation);
+            updateHistory(history);
+        }
+
+        function updateResult(calculation) {
+            const resultElement = document.getElementById('result');
+
+            const resultHTML = `New Clan Points on Win: ${calculation.newPointsOnWin}<br>
+                                New Clan Points on Loss: ${calculation.newPointsOnLoss}<br>
+                                Points Won: ${calculation.pointsWon}<br>
+                                Points Lost: ${calculation.pointsLost}`;
+
+            resultElement.innerHTML = resultHTML;
+        }
+
+        function updateHistory(historyArray) {
+            const historyElement = document.getElementById('history');
+            let historyHtml = '';
+
+            if (historyArray.length === 0) {
+                historyHtml = '<p>No history available.</p>';
+            } else {
+                historyHtml;
+                historyArray.forEach((calculation, index) => {
+                    historyHtml += `<div>${index + 1}. Old Points: ${calculation.oldPoints}, New Points on Win: ${calculation.newPointsOnWin}, New Points on Loss: ${calculation.newPointsOnLoss}, Points Won: ${calculation.pointsWon}, Points Lost: ${calculation.pointsLost}</div>`;
+                });
+            }
+
+            historyElement.innerHTML = historyHtml;
+        }
+
+        function resetForm() {
+            document.getElementById('oldPoints').value = '';
+            document.getElementById('numberOfHumans').value = '';
+            document.getElementById('contest').value = '1';
+            document.getElementById('numDigits').value = '';
+
+            // Clear result
+            document.getElementById('result').innerHTML = '';
+
+            history.length = 0;
+            updateHistory(history); // Pass the empty array to clear history
+        }
+
+
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+
+            // Toggle button appearance
+            const toggleButton = document.querySelector('.toggle-button');
+            toggleButton.innerHTML = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
         }
     </script>
-    
 </body>
 </html>
