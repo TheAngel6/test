@@ -33,7 +33,7 @@
 
     <div class="history">
         <h2>Calculation History</h2>
-        <div id="history"></div>
+        <div id="history" class="history-box"></div>
     </div>
 
     <button onclick="toggleMode()" class="toggle-button">&#9728;</button>
@@ -89,7 +89,13 @@
             } else {
                 historyHtml;
                 historyArray.forEach((calculation, index) => {
-                    historyHtml += `<div>${index + 1}. Old Points: ${calculation.oldPoints}, New Points on Win: ${calculation.newPointsOnWin}, New Points on Loss: ${calculation.newPointsOnLoss}, Points Won: ${calculation.pointsWon}, Points Lost: ${calculation.pointsLost}</div>`;
+                    historyHtml += `<div>${index + 1}. 
+                        Old Points: ${calculation.oldPoints}<br>
+                        New Points on Win: ${calculation.newPointsOnWin}<br>
+                        New Points on Loss: ${calculation.newPointsOnLoss}<br>
+                        Points Won: ${calculation.pointsWon}<br>
+                        Points Lost: ${calculation.pointsLost}</div>
+                        <hr>`;
                 });
             }
 
@@ -106,14 +112,13 @@
             document.getElementById('result').innerHTML = '';
 
             history.length = 0;
-            updateHistory(history); // Pass the empty array to clear history
+            updateHistory(history); 
         }
 
 
         function toggleMode() {
             document.body.classList.toggle('light-mode');
 
-            // Toggle button appearance
             const toggleButton = document.querySelector('.toggle-button');
             toggleButton.innerHTML = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
         }
