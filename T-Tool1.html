@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="csssheet.css">
+    <style>
+        @media screen and (max-width: 600px) {
+
+            .calculator {
+                width: 100%;
+                margin: 0; 
+            }
+
+            .history {
+                display: none; 
+            }
+            .hide-reset {
+            display: none;
+        }
+        }
+
+        @media screen and (min-width: 601px) {
+            .history {
+                width: 50%; 
+                margin: 0 auto; 
+            }
+        }
+    </style>
+    <title>Clan Points Converter</title>
+</head>
+<body>
+    <div class="calculator">
+        <label for="oldPoints">Old Clan Points:</label>
+        <input type="number" id="oldPoints" placeholder="Enter old clan points">
+
+        <label for="numberOfHumans">Number of Humans:</label>
+        <input type="number" id="numberOfHumans" placeholder="Enter number of humans">
+
+        <label for="numDigits">Number of Digits:</label>
+        <input type="number" id="numDigits" placeholder="Enter number of digits">
+
+        <label for="contest">Contest:</label>
+        <select id="contest">
+            <option value="1">No</option>
+            <option value="2">Yes</option>
+        </select>
+        <br>
+        <br>
+
+        <button onclick="calculateNewPoints()">Calculate Points</button>
+        <button onclick="resetForm()" class="hide-reset">Reset Form</button>
+
+        <div id="result"></div>
+    </div>
+
+    <div class="history">
+        <h2>Calculation History</h2>
+        <div id="history" class="history-box"></div>
+    </div>
+
+    <button onclick="toggleMode()" class="toggle-button">&#9728;</button>
+
+    <script>
+        const history = [];
+
+        function calculateNewPoints() {
+            const oldPoints = parseFloat(document.getElementById('oldPoints').value);
+            const numberOfHumans = parseFloat(document.getElementById('numberOfHumans').value);
+            const contest = parseInt(document.getElementById('contest').value);
+            const numDigits = parseInt(document.getElementById('numDigits').value);
+
+            const newPointsOnWin = oldPoints + contest * (64 - oldPoints) * numberOfHumans / 589824;
+            const newPointsOnLoss = oldPoints * (1032192 / (1032192 + numberOfHumans));
+
+            const pointsWon = newPointsOnWin - oldPoints;
+            const pointsLost = oldPoints - newPointsOnLoss;
+
+            const calculation = {
+                oldPoints,
+                numberOfHumans,
+                contest,
+                numDigits,
+                newPointsOnWin: newPointsOnWin.toFixed(numDigits),
+                newPointsOnLoss: newPointsOnLoss.toFixed(numDigits),
+                pointsWon: pointsWon.toFixed(numDigits),
+                pointsLost: pointsLost.toFixed(numDigits),
+            };
+
+            history.push(calculation);
+            updateResult(calculation);
+            updateHistory(history);
+        }
+
+        function updateResult(calculation) {
+            const resultElement = document.getElementById('result');
+
+            const resultHTML = `New Clan Points on Win: ${calculation.newPointsOnWin}<br>
+                                New Clan Points on Loss: ${calculation.newPointsOnLoss}<br>
+                                Points Won: ${calculation.pointsWon}<br>
+                                Points Lost: ${calculation.pointsLost}`;
+
+            resultElement.innerHTML = resultHTML;
+        }
+
+        function updateHistory(historyArray) {
+            const historyElement = document.getElementById('history');
+            let historyHtml = '';
+
+            if (historyArray.length === 0) {
+                historyHtml = '<p>No history available.</p>';
+            } else {
+                historyHtml;
+                historyArray.forEach((calculation, index) => {
+                    historyHtml += `<div>${index + 1}. 
+                        Old Points: ${calculation.oldPoints}<br>
+                        New Points on Win: ${calculation.newPointsOnWin}<br>
+                        New Points on Loss: ${calculation.newPointsOnLoss}<br>
+                        Points Won: ${calculation.pointsWon}<br>
+                        Points Lost: ${calculation.pointsLost}</div>
+                        <hr>`;
+                });
+            }
+
+            historyElement.innerHTML = historyHtml;
+        }
+
+        function resetForm() {
+            document.getElementById('oldPoints').value = '';
+            document.getElementById('numberOfHumans').value = '';
+            document.getElementById('contest').value = '1';
+            document.getElementById('numDigits').value = '';
+
+            // Clear result
+            document.getElementById('result').innerHTML = '';
+
+            history.length = 0;
+            updateHistory(history);
+            document.querySelector('.hide-reset').style.display = 'none';
+ 
+        }
+
+
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+
+            const toggleButton = document.querySelector('.toggle-button');
+            toggleButton.innerHTML = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
+        }
+    </script>
+</body>
+</html>
