@@ -1,1 +1,135 @@
-cumming soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="csssheet.css">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <style>
+        @media screen and (max-width: 600px) {
+            .calculator {
+                width: 100%;
+                margin: 0; 
+            }
+
+            .history {
+                display: none; 
+            }
+
+            .hide-reset {
+                display: none;
+            }
+        }
+
+        @media screen and (min-width: 601px) {
+            .history {
+                width: 50%; 
+                margin: 0 auto; 
+            }
+        }
+    </style>
+    <title>Micro Efficiency Calculator</title>
+</head>
+<body>
+    <div class="calculator">
+        <label for="troops">Troops:</label>
+        <input type="number" id="troops" placeholder="Enter troops">
+
+        <label for="attackingTroops">Attacking Troops:</label>
+        <input type="number" id="attackingTroops" placeholder="Enter attacking troops">
+
+        <label for="overallExpense">Overall Expense:</label>
+        <input type="number" id="overallExpense" placeholder="Enter overall expense">
+
+        <label for="land">Land:</label>
+        <input type="number" id="land" placeholder="Enter land">
+
+        <button onclick="calculateMicroEfficiency()">Calculate Micro Efficiency</button>
+        <button onclick="resetForm()" class="hide-reset">Reset Form</button>
+
+        <div id="result"></div>
+    </div>
+
+    <div class="history">
+        <h2>Calculation History</h2>
+        <div id="history" class="history-box"></div>
+    </div>
+
+    <button onclick="toggleMode()" class="toggle-button">&#9728;</button>
+
+    <script>
+        const history = [];
+
+        function calculateMicroEfficiency() {
+            const troops = parseFloat(document.getElementById('troops').value);
+            const attackingTroops = parseFloat(document.getElementById('attackingTroops').value);
+            const overallExpense = parseFloat(document.getElementById('overallExpense').value);
+            const land = parseFloat(document.getElementById('land').value);
+
+            const microEfficiency = ((troops + attackingTroops) / (overallExpense / land)) + land;
+
+            const calculation = {
+                troops,
+                attackingTroops,
+                overallExpense,
+                land,
+                microEfficiency: microEfficiency.toFixed(2),
+            };
+
+            history.push(calculation);
+            updateResult(calculation);
+            updateHistory(history);
+        }
+
+        function updateResult(calculation) {
+            const resultElement = document.getElementById('result');
+
+            const resultHTML = `Micro Efficiency: ${calculation.microEfficiency}`;
+
+            resultElement.innerHTML = resultHTML;
+        }
+
+        function updateHistory(historyArray) {
+            const historyElement = document.getElementById('history');
+            let historyHtml = '';
+
+            if (historyArray.length === 0) {
+                historyHtml = '<p>No history available.</p>';
+            } else {
+                historyArray.forEach((calculation, index) => {
+                    historyHtml += `<div>${index + 1}. 
+                        Troops: ${calculation.troops}<br>
+                        Attacking Troops: ${calculation.attackingTroops}<br>
+                        Overall Expense: ${calculation.overallExpense}<br>
+                        Land: ${calculation.land}<br>
+                        Micro Efficiency: ${calculation.microEfficiency}</div>
+                        <hr>`;
+                });
+            }
+
+            historyElement.innerHTML = historyHtml;
+        }
+
+        function resetForm() {
+            document.getElementById('troops').value = '';
+            document.getElementById('attackingTroops').value = '';
+            document.getElementById('overallExpense').value = '';
+            document.getElementById('land').value = '';
+
+            // Clear result
+            document.getElementById('result').innerHTML = '';
+
+            history.length = 0;
+            updateHistory(history);
+            document.querySelector('.hide-reset').style.display = 'none';
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+
+            const toggleButton = document.querySelector('.toggle-button');
+            toggleButton.innerHTML = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
+        }
+    </script>
+</body>
+</html>
